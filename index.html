@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>世界小窗 🌍</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #faf8f5;
+    --sidebar-bg: #f0ede8;
+    --card-bg: #ffffff;
+    --text: #2c2c2c;
+    --dim: #8a8580;
+    --accent: #c17f59;
+    --accent-light: rgba(193,127,89,0.08);
+    --border: rgba(0,0,0,0.06);
+    --shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ===== 桌面：左右分栏 ===== */
+  .layout {
+    display: flex;
+    height: 100dvh;
+  }
+
+  /* 左侧列表 */
+  .sidebar {
+    width: 320px;
+    min-width: 280px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .sidebar-header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sidebar-header .count {
+    font-size: 12px;
+    color: var(--dim);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  .list-container {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .list-item {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .list-item:hover { background: rgba(0,0,0,0.02); }
+  .list-item.active { background: var(--card-bg); }
+  .list-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent);
+  }
+
+  .list-item .item-emoji {
+    font-size: 20px;
+    float: left;
+    margin-right: 10px;
+    margin-top: 2px;
+  }
+
+  .list-item .item-title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .list-item .item-meta {
+    font-size: 11px;
+    color: var(--dim);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .list-item .item-tag {
+    font-size: 10px;
+    padding: 1px 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 10px;
+  }
+
+  /* 右侧详情 */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .content-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 32px 60px;
+  }
+
+  .article-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .article-emoji {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .article-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .article-meta {
+    font-size: 13px;
+    color: var(--dim);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .article-tag {
+    font-size: 11px;
+    padding: 2px 10px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 12px;
+  }
+
+  .article-body {
+    font-size: 15px;
+    line-height: 2;
+    color: #3a3a3a;
+  }
+
+  .article-body p {
+    margin-bottom: 16px;
+  }
+
+  .article-body b, .article-body strong {
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .article-question {
+    margin-top: 28px;
+    padding: 16px 20px;
+    background: var(--accent-light);
+    border-radius: 10px;
+    border-left: 3px solid var(--accent);
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--accent);
+  }
+
+  .article-question::before {
+    content: '💭 ';
+  }
+
+  /* 空状态 */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--dim);
+    text-align: center;
+    padding: 40px;
+  }
+
+  .empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .empty-state .empty-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .empty-state .empty-desc {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* 底部署名 */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 11px;
+    color: rgba(0,0,0,0.15);
+  }
+
+  /* ===== 手机：单列 ===== */
+  @media (max-width: 640px) {
+    .layout { flex-direction: column; }
+
+    .sidebar {
+      width: 100%;
+      min-width: 100%;
+      height: 100dvh;
+      transition: transform 0.3s;
+    }
+
+    .sidebar.hidden {
+      transform: translateX(-100%);
+      position: absolute;
+      z-index: 10;
+    }
+
+    .content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg);
+      transform: translateX(100%);
+      transition: transform 0.3s;
+      z-index: 20;
+    }
+
+    .content.show {
+      transform: translateX(0);
+    }
+
+    .content-inner {
+      padding: 20px 16px 40px;
+    }
+
+    .back-btn {
+      display: flex !important;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 16px;
+      cursor: pointer;
+      padding: 8px 0;
+    }
+
+    .article-title { font-size: 20px; }
+    .article-body { font-size: 14px; }
+  }
+
+  @media (min-width: 641px) {
+    .back-btn { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1>🌍 世界小窗</h1>
+      <div class="count" id="itemCount">每天一个新发现</div>
+    </div>
+    <div class="list-container" id="listContainer"></div>
+  </div>
+
+  <div class="content" id="content">
+    <div class="content-inner" id="contentInner">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">🌏</div>
+        <div class="empty-title">世界小窗</div>
+        <div class="empty-desc">每天一个小知识，帮你更了解这个世界一点。<br>明天 9:45 第一条就到。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA_URL = '/world-window/data.json';
+let articles = [];
+let activeIndex = -1;
+const isMobile = () => window.innerWidth <= 640;
+
+async function loadData() {
+  try {
+    const resp = await fetch(DATA_URL + '?t=' + Date.now());
+    articles = await resp.json();
+    // Sort by date descending
+    articles.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    renderList();
+    if (articles.length > 0) {
+      selectItem(0);
+    }
+  } catch (e) {
+    console.error('Load data error:', e);
+  }
+}
+
+function renderList() {
+  const container = document.getElementById('listContainer');
+  document.getElementById('itemCount').textContent = articles.length > 0
+    ? `共 ${articles.length} 条 · 每天更新`
+    : '每天一个新发现';
+
+  if (articles.length === 0) {
+    container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--dim);font-size:13px">还没有内容，明天 9:45 第一条就到 ✨</div>';
+    return;
+  }
+
+  container.innerHTML = articles.map((a, i) => `
+    <div class="list-item ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="selectItem(${i})">
+      <span class="item-emoji">${a.emoji || '📌'}</span>
+      <div class="item-title">${escHtml(a.title)}</div>
+      <div class="item-meta">
+        <span>${a.date || ''}</span>
+        ${a.category ? `<span class="item-tag">${escHtml(a.category)}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectItem(index) {
+  activeIndex = index;
+  const a = articles[index];
+
+  // Update active state in list
+  document.querySelectorAll('.list-item').forEach((el, i) => {
+    el.classList.toggle('active', i === index);
+  });
+
+  // Render article
+  const body = formatBody(a.content || '');
+  const question = a.question ? `<div class="article-question">${escHtml(a.question)}</div>` : '';
+
+  document.getElementById('contentInner').innerHTML = `
+    <div class="back-btn" onclick="goBack()">← 返回列表</div>
+    <div class="article-header">
+      <div class="article-emoji">${a.emoji || '📌'}</div>
+      <div class="article-title">${escHtml(a.title)}</div>
+      <div class="article-meta">
+        <span>${a.date || ''}</span>
+        ${a.category ? `<span class="article-tag">${escHtml(a.category)}</span>` : ''}
+      </div>
+    </div>
+    <div class="article-body">${body}</div>
+    ${question}
+    <div class="footer">Atom ⚛️ · 世界小窗</div>
+  `;
+
+  // Mobile: show content
+  if (isMobile()) {
+    document.getElementById('content').classList.add('show');
+    document.getElementById('sidebar').classList.add('hidden');
+  }
+}
+
+function goBack() {
+  document.getElementById('content').classList.remove('show');
+  document.getElementById('sidebar').classList.remove('hidden');
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatBody(text) {
+  let s = escHtml(text);
+  s = s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  // Split into paragraphs
+  s = s.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+  return s;
+}
+
+// Handle resize
+window.addEventListener('resize', () => {
+  if (!isMobile()) {
+    document.getElementById('content').classList.remove('show');
+    document.getElementById('sidebar').classList.remove('hidden');
+  }
+});
+
+loadData();
+</script>
+
+</body>
+</html>
