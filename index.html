@@ -178,6 +178,30 @@
     border-radius: 12px;
   }
 
+  .article-hero {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    background: var(--sidebar-bg);
+    position: relative;
+  }
+
+  .article-hero img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    max-height: 360px;
+  }
+
+  .article-hero .img-caption {
+    font-size: 11px;
+    color: var(--dim);
+    padding: 6px 12px;
+    text-align: center;
+    background: rgba(0,0,0,0.02);
+  }
+
   .article-body {
     font-size: 15px;
     line-height: 2;
@@ -191,6 +215,21 @@
   .article-body b, .article-body strong {
     font-weight: 700;
     color: var(--text);
+  }
+
+  .article-body .inline-img {
+    width: 100%;
+    border-radius: 8px;
+    margin: 12px 0;
+    display: block;
+    object-fit: cover;
+  }
+
+  .article-body .img-caption {
+    font-size: 11px;
+    color: var(--dim);
+    text-align: center;
+    margin: -6px 0 12px;
   }
 
   .article-question {
@@ -356,6 +395,7 @@ function renderList() {
 
   container.innerHTML = articles.map((a, i) => `
     <div class="list-item ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="selectItem(${i})">
+      ${a.image ? `<div class="item-thumb" style="width:48px;height:48px;border-radius:6px;overflow:hidden;float:right;margin-left:10px;flex-shrink:0"><img src="${escAttr(a.image)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.display='none'"></div>` : ''}
       <span class="item-emoji">${a.emoji || '📌'}</span>
       <div class="item-title">${escHtml(a.title)}</div>
       <div class="item-meta">
@@ -379,6 +419,13 @@ function selectItem(index) {
   const body = formatBody(a.content || '');
   const question = a.question ? `<div class="article-question">${escHtml(a.question)}</div>` : '';
 
+  // Hero image
+  const heroImg = a.image ? `
+    <div class="article-hero">
+      <img src="${escAttr(a.image)}" alt="${escHtml(a.title)}" onerror="this.parentElement.style.display='none'">
+      ${a.image_caption ? `<div class="img-caption">${escHtml(a.image_caption)}</div>` : ''}
+    </div>` : '';
+
   document.getElementById('contentInner').innerHTML = `
     <div class="back-btn" onclick="goBack()">← 返回列表</div>
     <div class="article-header">
@@ -389,6 +436,7 @@ function selectItem(index) {
         ${a.category ? `<span class="article-tag">${escHtml(a.category)}</span>` : ''}
       </div>
     </div>
+    ${heroImg}
     <div class="article-body">${body}</div>
     ${question}
     <div class="footer">Atom ⚛️ · 世界小窗</div>
@@ -411,9 +459,19 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+function escAttr(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 function formatBody(text) {
   let s = escHtml(text);
   s = s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  // Inline images: ![caption](url)
+  s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, cap, url) => {
+    const caption = cap ? `<div class="img-caption">${cap}</div>` : '';
+    return `<img class="inline-img" src="${escAttr(url)}" alt="${cap}" onerror="this.style.display='none'">${caption}`;
+  });
   // Split into paragraphs
   s = s.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
   return s;
