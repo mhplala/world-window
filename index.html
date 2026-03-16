@@ -247,6 +247,86 @@
     content: '💭 ';
   }
 
+  /* ===== 对话区 ===== */
+  .conversation-section {
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+
+  .conversation-header {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dim);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .conversation-header::before {
+    content: '💬';
+  }
+
+  .chat-bubble {
+    margin-bottom: 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .chat-bubble.user {
+    flex-direction: row-reverse;
+  }
+
+  .chat-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .chat-bubble.user .chat-avatar {
+    background: #e8f4f8;
+  }
+
+  .chat-bubble.atom .chat-avatar {
+    background: var(--accent-light);
+  }
+
+  .chat-body {
+    max-width: 82%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: #3a3a3a;
+  }
+
+  .chat-bubble.user .chat-body {
+    background: #e8f4f8;
+    border-top-right-radius: 4px;
+  }
+
+  .chat-bubble.atom .chat-body {
+    background: #f5f2ee;
+    border-top-left-radius: 4px;
+  }
+
+  .chat-body p {
+    margin-bottom: 8px;
+  }
+
+  .chat-body p:last-child {
+    margin-bottom: 0;
+  }
+
   /* 空状态 */
   .empty-state {
     display: flex;
@@ -439,6 +519,7 @@ function selectItem(index) {
     ${heroImg}
     <div class="article-body">${body}</div>
     ${question}
+    ${renderConversation(a.conversation)}
     <div class="footer">Atom ⚛️ · 世界小窗</div>
   `;
 
@@ -462,6 +543,23 @@ function escHtml(s) {
 function escAttr(s) {
   if (!s) return '';
   return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderConversation(conv) {
+  if (!conv || conv.length === 0) return '';
+  const bubbles = conv.map(msg => {
+    const role = msg.role === 'user' ? 'user' : 'atom';
+    const avatar = role === 'user' ? '🙋' : '⚛️';
+    const bodyHtml = formatBody(msg.text || '');
+    return `<div class="chat-bubble ${role}">
+      <div class="chat-avatar">${avatar}</div>
+      <div class="chat-body">${bodyHtml}</div>
+    </div>`;
+  }).join('');
+  return `<div class="conversation-section">
+    <div class="conversation-header">延伸对话</div>
+    ${bubbles}
+  </div>`;
 }
 
 function formatBody(text) {
