@@ -449,7 +449,7 @@ const isMobile = () => window.innerWidth <= 640;
 
 async function loadData() {
   try {
-    const resp = await fetch(DATA_URL + '?t=' + Date.now());
+    const resp = await fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' });
     articles = await resp.json();
     // Sort by date descending
     articles.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
