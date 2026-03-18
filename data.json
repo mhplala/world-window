@@ -8,7 +8,16 @@
     "question": "你觉得两千年后的人回看我们现在的日常习惯，会觉得哪些事最不可思议？",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Pompeii_-_Fullonica_of_Stephanus_-_Laundry.jpg/800px-Pompeii_-_Fullonica_of_Stephanus_-_Laundry.jpg",
     "image_caption": "庞贝古城的洗衣作坊遗址 · Wikimedia Commons",
-    "conversation": []
+    "conversation": [
+      {
+        "role": "user",
+        "text": "那所以他们会去收集国外的人的尿，然后再进口过来吗？"
+      },
+      {
+        "role": "atom",
+        "text": "对，真的是这样。古罗马时期有专门的尿液贸易链条。葡萄牙（当时叫卢西塔尼亚 Lusitania）的尿之所以受追捧，一个说法是罗马人觉得西班牙人的尿\"更烈\"——可能跟饮食习惯有关。不过更实际的原因是，罗马城本身虽然也大量收集本地尿液，但需求量太大了，供不应求。\n\n罗马城里的收集方式很有意思：洗衣作坊老板会在街角放大陶罐（叫 dolium），路人随时可以往里尿。满了就有人来收走，送到洗衣店和作坊去用。基本上是古代版的\"废品回收站\"。而远距离贸易的尿会用陶罐密封后装船运输——尿放久了氨浓度反而更高，长途运输的\"陈尿\"效果其实比新鲜的更好，算是歪打正着。\n\n所以韦斯巴芗征的那个\"尿税\"不是开玩笑——这是一条真实的、有规模的产业链，从街头收集到跨地中海运输，涉及的人和钱都不少。"
+      }
+    ]
   },
   {
     "emoji": "🚪",
