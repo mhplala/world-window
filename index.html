@@ -548,6 +548,23 @@ function escAttr(s) {
 function renderConversation(conv) {
   if (!conv || conv.length === 0) return '';
   const bubbles = conv.map(msg => {
+    // Support both {role, text} and {q, a} formats
+    if (msg.q !== undefined || msg.a !== undefined) {
+      let out = '';
+      if (msg.q) {
+        out += `<div class="chat-bubble user">
+          <div class="chat-avatar">🙋</div>
+          <div class="chat-body">${formatBody(msg.q)}</div>
+        </div>`;
+      }
+      if (msg.a) {
+        out += `<div class="chat-bubble atom">
+          <div class="chat-avatar">⚛️</div>
+          <div class="chat-body">${formatBody(msg.a)}</div>
+        </div>`;
+      }
+      return out;
+    }
     const role = msg.role === 'user' ? 'user' : 'atom';
     const avatar = role === 'user' ? '🙋' : '⚛️';
     const bodyHtml = formatBody(msg.text || '');
