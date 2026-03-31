@@ -68,6 +68,62 @@
     margin-top: 4px;
   }
 
+  /* 搜索框 */
+  .search-bar {
+    padding: 12px 16px 8px;
+  }
+
+  .search-bar input {
+    width: 100%;
+    padding: 8px 12px 8px 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--card-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238a8580' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E") no-repeat 10px center;
+    outline: none;
+    transition: border-color 0.2s;
+    color: var(--text);
+  }
+
+  .search-bar input:focus {
+    border-color: var(--accent);
+  }
+
+  .search-bar input::placeholder {
+    color: var(--dim);
+  }
+
+  /* 分类标签 */
+  .category-filter {
+    padding: 4px 16px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .cat-chip {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.04);
+    color: var(--dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .cat-chip:hover {
+    background: rgba(0,0,0,0.07);
+  }
+
+  .cat-chip.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-color: rgba(193,127,89,0.2);
+  }
+
   .list-container {
     flex: 1;
     overflow-y: auto;
@@ -427,6 +483,10 @@
       <h1>🌍 世界小窗</h1>
       <div class="count" id="itemCount">每天一个新发现</div>
     </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索标题或内容…" oninput="filterList()">
+    </div>
+    <div class="category-filter" id="categoryFilter"></div>
     <div class="list-container" id="listContainer"></div>
   </div>
 
@@ -444,7 +504,9 @@
 <script>
 const DATA_URL = '/world-window/data.json';
 let articles = [];
+let filtered = [];
 let activeIndex = -1;
+let activeCategory = null;
 const isMobile = () => window.innerWidth <= 640;
 
 async function loadData() {
@@ -453,8 +515,10 @@ async function loadData() {
     articles = await resp.json();
     // Sort by date descending
     articles.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    filtered = [...articles];
+    renderCategoryFilter();
     renderList();
-    if (articles.length > 0) {
+    if (filtered.length > 0) {
       selectItem(0);
     }
   } catch (e) {
@@ -462,18 +526,57 @@ async function loadData() {
   }
 }
 
+function renderCategoryFilter() {
+  const cats = [...new Set(articles.map(a => a.category).filter(Boolean))].sort();
+  const container = document.getElementById('categoryFilter');
+  if (cats.length === 0) { container.innerHTML = ''; return; }
+  container.innerHTML = `<span class="cat-chip ${!activeCategory ? 'active' : ''}" onclick="setCategory(null)">全部</span>` +
+    cats.map(c => `<span class="cat-chip ${activeCategory === c ? 'active' : ''}" onclick="setCategory('${escAttr(c)}')">${escHtml(c)}</span>`).join('');
+}
+
+function setCategory(cat) {
+  activeCategory = cat;
+  renderCategoryFilter();
+  filterList();
+}
+
+function filterList() {
+  const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+  filtered = articles.filter(a => {
+    if (activeCategory && a.category !== activeCategory) return false;
+    if (query) {
+      const haystack = ((a.title || '') + ' ' + (a.content || '') + ' ' + (a.category || '')).toLowerCase();
+      return haystack.includes(query);
+    }
+    return true;
+  });
+  renderList();
+  if (filtered.length > 0) {
+    selectItem(0);
+  } else {
+    document.getElementById('contentInner').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">没找到相关内容</div>
+        <div class="empty-desc">试试换个关键词，或者点「全部」看看其他文章</div>
+      </div>`;
+  }
+}
+
 function renderList() {
   const container = document.getElementById('listContainer');
-  document.getElementById('itemCount').textContent = articles.length > 0
-    ? `共 ${articles.length} 条 · 每天更新`
+  const total = articles.length;
+  const showing = filtered.length;
+  document.getElementById('itemCount').textContent = total > 0
+    ? (showing < total ? `${showing} / ${total} 条` : `共 ${total} 条 · 每天更新`)
     : '每天一个新发现';
 
-  if (articles.length === 0) {
-    container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--dim);font-size:13px">还没有内容，明天 9:45 第一条就到 ✨</div>';
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--dim);font-size:13px">没有匹配的内容</div>';
     return;
   }
 
-  container.innerHTML = articles.map((a, i) => `
+  container.innerHTML = filtered.map((a, i) => `
     <div class="list-item ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="selectItem(${i})">
       ${a.image ? `<div class="item-thumb" style="width:48px;height:48px;border-radius:6px;overflow:hidden;float:right;margin-left:10px;flex-shrink:0"><img src="${escAttr(a.image)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.display='none'"></div>` : ''}
       <span class="item-emoji">${a.emoji || '📌'}</span>
@@ -488,7 +591,7 @@ function renderList() {
 
 function selectItem(index) {
   activeIndex = index;
-  const a = articles[index];
+  const a = filtered[index];
 
   // Update active state in list
   document.querySelectorAll('.list-item').forEach((el, i) => {
