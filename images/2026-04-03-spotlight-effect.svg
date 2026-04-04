@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <rect width="1600" height="1000" fill="#1d2330"/>
+  <rect x="0" y="0" width="800" height="1000" fill="#252c3d"/>
+  <rect x="800" y="0" width="800" height="1000" fill="#eef2f7"/>
+  <polygon points="400,0 260,1000 540,1000" fill="#ffe08a" opacity="0.35"/>
+  <circle cx="400" cy="520" r="110" fill="#d1495b"/>
+  <circle cx="1180" cy="520" r="110" fill="#d1495b"/>
+  <rect x="330" y="610" width="140" height="180" rx="30" fill="#d1495b"/>
+  <rect x="1110" y="610" width="140" height="180" rx="30" fill="#d1495b"/>
+  <g fill="#97a6ba" opacity="0.8">
+    <circle cx="130" cy="470" r="70"/><rect x="90" y="540" width="80" height="140" rx="20"/>
+    <circle cx="650" cy="450" r="70"/><rect x="610" y="520" width="80" height="140" rx="20"/>
+  </g>
+  <g fill="#9aa3ad" opacity="0.9">
+    <circle cx="960" cy="470" r="70"/><rect x="920" y="540" width="80" height="140" rx="20"/>
+    <circle cx="1420" cy="450" r="70"/><rect x="1380" y="520" width="80" height="140" rx="20"/>
+  </g>
+  <rect x="885" y="560" width="110" height="70" rx="14" fill="#cfd8e3" transform="rotate(-12 940 595)"/>
+  <rect x="1365" y="545" width="110" height="70" rx="14" fill="#cfd8e3" transform="rotate(8 1420 580)"/>
+  <text x="110" y="120" font-family="Georgia, serif" font-size="72" fill="#fff4cf">你以为所有人在看你</text>
+  <text x="920" y="120" font-family="Georgia, serif" font-size="72" fill="#273043">其实大家都在看自己</text>
+  <text x="140" y="900" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="40" fill="#ffe08a">Spotlight Effect</text>
+  <text x="950" y="900" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="40" fill="#51606f">聚光灯只是你脑内的舞台灯</text>
+</svg>

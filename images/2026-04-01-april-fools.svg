@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1b1a2e"/>
+      <stop offset="100%" stop-color="#5c2a2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <circle cx="320" cy="260" r="120" fill="#f4d35e" opacity="0.15"/>
+  <circle cx="1280" cy="180" r="90" fill="#ee964b" opacity="0.12"/>
+  <path d="M760 210 C640 260 610 420 680 520 C740 610 860 640 950 575 C1060 495 1080 345 1005 255 C940 180 850 170 760 210 Z" fill="#f8f4e3" opacity="0.95"/>
+  <path d="M790 255 C760 280 740 315 735 350 C815 330 875 345 935 405 C940 345 925 300 895 265 C860 225 825 225 790 255 Z" fill="#c83e4d"/>
+  <circle cx="795" cy="365" r="20" fill="#1b1a2e"/>
+  <circle cx="885" cy="375" r="20" fill="#1b1a2e"/>
+  <path d="M800 455 Q850 500 900 450" stroke="#1b1a2e" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <path d="M660 640 C780 540 980 540 1090 640" stroke="#f8f4e3" stroke-width="18" fill="none" stroke-dasharray="18 24" opacity="0.75"/>
+  <path d="M280 690 C360 640 420 620 500 625 C580 630 640 670 700 740" stroke="#7bdff2" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <path d="M300 710 C380 660 440 645 515 650 C575 654 635 690 680 742" stroke="#f4d35e" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.9"/>
+  <text x="120" y="865" font-family="Georgia, serif" font-size="92" fill="#fff7e6">April Fools</text>
+  <text x="120" y="935" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="42" fill="#f3d9b1">起源成谜，历史自己就在开玩笑</text>
+</svg>
