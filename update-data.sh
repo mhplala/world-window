@@ -89,28 +89,42 @@ else
   echo "[world-window] no push this run, still verifying live site"
 fi
 
-node - <<'JS'
-const { chromium } = require('playwright');
-(async () => {
-  const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
-  try {
-    await page.goto('https://mhplala.github.io/world-window/', { waitUntil: 'networkidle', timeout: 60000 });
-    await page.waitForTimeout(3000);
-    const broken = await page.evaluate(() => Array.from(document.images)
-      .map((img, i) => ({ i, src: img.getAttribute('src'), currentSrc: img.currentSrc, naturalWidth: img.naturalWidth, complete: img.complete }))
-      .filter(x => x.complete && x.naturalWidth === 0));
-    if (broken.length) {
-      console.error('[world-window] ERROR: broken images on live site');
-      for (const item of broken) console.error('[world-window] ERROR:', JSON.stringify(item));
-      process.exit(1);
-    }
-    console.log('[world-window] browser verification OK: broken images = 0');
-  } finally {
-    await browser.close();
-  }
-})().catch(err => {
-  console.error('[world-window] ERROR: browser verification failed:', err.message || err);
-  process.exit(1);
-});
-JS
+python3 - <<'PY'
+import json, sys, urllib.request
+from urllib.parse import urljoin
+from PIL import Image
+from io import BytesIO
+
+BASE = 'https://mhplala.github.io/world-window/'
+DATA_URL = urljoin(BASE, 'data.json')
+raw = urllib.request.urlopen(DATA_URL, timeout=60).read().decode('utf-8')
+data = json.loads(raw)
+
+seen = []
+for item in data:
+    src = item.get('image')
+    if src and src not in seen:
+        seen.append(src)
+
+broken = []
+for src in seen:
+    url = urljoin(BASE, src)
+    try:
+        data = urllib.request.urlopen(url, timeout=60).read()
+        if src.lower().endswith('.svg'):
+            if b'<svg' not in data[:500].lower():
+                broken.append({'src': src, 'reason': 'not svg content'})
+            continue
+        img = Image.open(BytesIO(data))
+        img.verify()
+    except Exception as e:
+        broken.append({'src': src, 'reason': str(e)})
+
+if broken:
+    print('[world-window] ERROR: broken images on live site', file=sys.stderr)
+    for item in broken:
+        print('[world-window] ERROR:', json.dumps(item, ensure_ascii=False), file=sys.stderr)
+    sys.exit(1)
+
+print(f'[world-window] browser-style verification OK: broken images = 0, checked {len(seen)} images')
+PY
