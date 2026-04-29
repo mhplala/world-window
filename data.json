@@ -549,5 +549,27 @@
     "emoji": "🍨",
     "image": "images/tomatoes.jpg",
     "image_prompt": "Placeholder food styling image until dedicated ice cream ad art is generated."
+  },
+  {
+    "emoji": "💃",
+    "title": "1518年的“舞蹈瘟疫”：一场停不下来的集体狂欢",
+    "category": "历史冷知识",
+    "date": "2026-04-29",
+    "image": "images/2026-04-29-dancing-plague.jpg",
+    "image_caption": "Gemini 生成配图：1518年斯特拉斯堡广场上的诡异舞步。",
+    "content": "想象一下，1518年的夏天...",
+    "question": "...",
+    "conversation": []
+  },
+  {
+    "emoji": "🌳",
+    "title": "树木也能“社交”：森林地下的“互联网”",
+    "category": "自然科学",
+    "date": "2026-04-24",
+    "image": "images/2026-04-24-wood-wide-web.jpg",
+    "image_caption": "...",
+    "content": "...",
+    "question": "...",
+    "conversation": []
   }
 ]
