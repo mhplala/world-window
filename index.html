@@ -128,7 +128,7 @@
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    border: 3px solid red;
+    display: block;
   }
 
   .list-item {
@@ -589,7 +589,6 @@ function renderList() {
       </div>
     </div>
   `).join('');
-  console.log("Rendered list items:", container.querySelectorAll('.list-item').length);
 }
 
 function selectItem(index) {
